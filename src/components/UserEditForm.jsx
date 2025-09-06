@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../redux/userSlice";
+import { updateUserAsync } from "../redux/userSlice";
 
 const UserEditForm = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const { user, status, error } = useSelector((state) => ({
+    user: state.user,
+    status: state.user.status,
+    error: state.user.error,
+  }));
 
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUser({ name, email }));
+    dispatch(updateUserAsync({ name, email }));
   };
 
   return (
@@ -40,9 +44,16 @@ const UserEditForm = () => {
           />
         </label>
       </div>
-      <button type="submit" style={{ marginTop: "16px" }}>
-        Оновити дані
+      <button
+        type="submit"
+        style={{ marginTop: "16px" }}
+        disabled={status === "loading"}
+      >
+        {status === "loading" ? "Оновлення..." : "Оновити дані"}
       </button>
+      {status === "failed" && (
+        <p style={{ color: "red", marginTop: "8px" }}>Помилка: {error}</p>
+      )}
     </form>
   );
 };
