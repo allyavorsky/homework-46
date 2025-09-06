@@ -1,4 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+export const updateUserAsync = createAsyncThunk(
+  "user/updateUser",
+  async (userData) => {
+    const response = await new Promise((resolve) =>
+      setTimeout(() => {
+        resolve({ data: userData });
+      }, 1000)
+    );
+    return response.data;
+  }
+);
 
 const initialState = {
   name: "Ярослав",
@@ -8,14 +20,7 @@ const initialState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    updateUser: (state, action) => {
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-    },
-  },
+  reducers: {},
 });
-
-export const { updateUser } = userSlice.actions;
 
 export default userSlice.reducer;
